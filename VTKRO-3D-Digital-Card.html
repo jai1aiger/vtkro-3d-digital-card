@@ -112,6 +112,34 @@
       transition: all 0.3s ease;
     }
 
+        .brand-logo-img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.45));
+      transition: transform 0.3s ease;
+    }
+    .brand-logo-img:hover {
+      transform: scale(1.06);
+    }
+    .motto-strip {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      padding: 6px 20px;
+      background: linear-gradient(90deg, rgba(0, 229, 255, 0.08) 0%, rgba(0, 112, 243, 0.18) 50%, rgba(0, 229, 255, 0.08) 100%);
+      border-bottom: 1px solid rgba(0, 229, 255, 0.22);
+      font-size: 11px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--cyan-neon);
+      position: sticky;
+      top: 61px;
+      z-index: 99;
+      backdrop-filter: blur(10px);
+    }
     .brand-group {
       display: flex;
       align-items: center;
@@ -1428,13 +1456,10 @@
   <!-- Sticky Glassmorphic Header -->
   <header class="site-header">
     <a href="#" class="brand-group">
-      <div class="brand-badge">
-        <span class="brand-dot"></span>
-        <strong style="color: var(--cyan-neon); font-family: 'Space Grotesk', sans-serif;">VTKRO</strong>
-      </div>
+      <img src="vtkro-logo-trans.png" alt="VTKRO Virtual Tour Kro" class="brand-logo-img" onerror="this.src='vtkro-logo.png'">
       <div class="brand-text">
         <span class="brand-title">VIRTUAL TOUR KRO <span style="color: var(--cyan-neon); font-size: 11px;">✨ 3D</span></span>
-        <span class="brand-sub">Next-Gen Websites & Portfolios</span>
+        <span class="brand-sub">EXPLORE 🌐 EXPERIENCE 🌐 VIRTUALLY</span>
       </div>
     </a>
 
@@ -1584,6 +1609,24 @@
             <a href="#" id="resWaBtn" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top: 10px;">
               <i class="fa-brands fa-whatsapp"></i> Confirm via WhatsApp
             </a>
+          </div>
+        </div>
+      </div>
+      <!-- Project 5: Official 3D Holographic Identity Badge -->
+      <div class="iso-card-wrapper">
+        <div class="iso-card">
+          <div class="iso-preview-box">
+            <div class="iso-badge-pos"><span class="iso-badge" style="background: rgba(0, 229, 255, 0.9); color: #02050e; font-weight: 800;">Official Badge</span></div>
+            <img src="vtkro-badge-card.jpg" alt="VTKRO Official 3D Lanyard Card" class="iso-preview-img" onerror="this.src='VTKRO_Visiting_Card_Showcase.png'" />
+          </div>
+          <div class="iso-body">
+            <span class="iso-cat">Authentic Brand Identity</span>
+            <h3 class="iso-title">Official 3D Executive Lanyard Badge</h3>
+            <p class="iso-desc">High-security holographic NFC & QR executive badge designed with cyber blue metallics and embossed VT chrome monogram.</p>
+          </div>
+          <div class="iso-footer">
+            <span style="font-size: 11px; color: var(--cyan-neon);"><i class="fa-solid fa-gem"></i> Authentic Design</span>
+            <a href="vtkro-badge-card.jpg" target="_blank" class="iso-link">View Full Badge <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
           </div>
         </div>
       </div>
