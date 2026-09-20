@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VTKRO | Authentic Encrypted QR Code & Visiting Card Showcase</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    :root {
+      --bg: #030712;
+      --card-bg: #091329;
+      --cyan: #00e5ff;
+      --cyan-glow: rgba(0, 229, 255, 0.4);
+      --border: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(0, 229, 255, 0.12) 0%, transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(2, 132, 199, 0.1) 0%, transparent 50%),
+        linear-gradient(180deg, #030712 0%, #060e22 50%, #02050e 100%);
+    }
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+    header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cyan);
+      letter-spacing: 0.5px;
+    }
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 30%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .tab-btn.active {
+      background: var(--cyan);
+      color: #030712;
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+    }
+
+    /* Content Views */
+    .tab-view {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .tab-view.active {
+      display: flex;
+    }
+
+    /* QR Display Frame */
+    .qr-frame {
+      position: relative;
+      max-width: 580px;
+      width: 100%;
+      background: #060e22;
+      border-radius: 24px;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      padding: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .qr-frame img {
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+      display: block;
+    }
+    .scan-notice {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 12px;
+      font-size: 14px;
+      color: #e2e8f0;
+      font-weight: 500;
+    }
+    .scan-notice strong {
+      color: var(--cyan);
+    }
+
+    /* 3D Interactive Card */
+    .card-scene {
+      width: 530px;
+      height: 295px;
+      perspective: 1200px;
+      cursor: grab;
+      margin: 20px 0;
+    }
+    .card-scene:active {
+      cursor: grabbing;
+    }
+    .card-3d {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.2);
+    }
+    .card-3d.flipped {
+      transform: rotateY(180deg);
+    }
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+    }
+    .card-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-face-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--cyan);
+      color: #030712;
+      border: none;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+    }
+    .btn-primary:hover {
+      background: #38bdf8;
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+    }
+
+    /* Showcase Image */
+    .showcase-frame {
+      max-width: 960px;
+      width: 100%;
+      background: #060e22;
+      border-radius: 20px;
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      padding: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+    .showcase-frame img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      display: block;
+    }
+
+    /* Verification Badge Section */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 960px;
+    }
+    .spec-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .spec-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .spec-val {
+      font-size: 15px;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+    .spec-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">
+        <span class="badge-dot"></span>
+        AUTHENTIC ENCRYPTED CYBER QR CODE
+      </div>
+      <h1>VTKRO Authentic QR Suite</h1>
+      <p class="subtitle">
+        Intricately designed cybernetic QR architecture with embedded VTKRO insignia, HUD targeting reticles, and 100% verified camera scannability redirecting directly to <strong>https://www.vtkro.com/</strong>.
+      </p>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('tab-qr')">⚡ Master Encrypted QR</button>
+      <button class="tab-btn" onclick="showTab('tab-card')">💳 3D Visiting Card (Flip)</button>
+      <button class="tab-btn" onclick="showTab('tab-showcase')">📊 Dual Showcase</button>
+    </div>
+
+    <!-- TAB 1: MASTER QR -->
+    <div id="tab-qr" class="tab-view active">
+      <div class="qr-frame">
+        <img src="VTKRO_Authentic_Encrypted_QR_1200x1200.png" alt="VTKRO Authentic Encrypted QR Code" />
+      </div>
+      <div class="scan-notice">
+        📱 Point your smartphone camera at this screen — <strong>instantly opens https://www.vtkro.com/</strong>
+      </div>
+      <div class="controls">
+        <a href="https://www.vtkro.com/" target="_blank" class="btn btn-primary">🔗 Test Open VTKRO.com</a>
+        <a href="VTKRO_Authentic_Encrypted_QR_1200x1200.png" download class="btn btn-secondary">⬇ Download 1200x1200px Master Art</a>
+      </div>
+    </div>
+
+    <!-- TAB 2: 3D CARD -->
+    <div id="tab-card" class="tab-view">
+      <div class="card-scene" id="cardScene" onclick="toggleFlip()">
+        <div class="card-3d" id="card3D">
+          <div class="card-face card-face-front">
+            <img src="VTKRO_Card_Front_90x50mm.png" alt="VTKRO Front Face" />
+          </div>
+          <div class="card-face card-face-back">
+            <img src="VTKRO_Card_Back_90x50mm.png" alt="VTKRO Back Face with Authentic QR" />
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-primary" onclick="toggleFlip()">🔄 Flip Visiting Card Face</button>
+        <a href="VTKRO_Card_Front_90x50mm.png" download class="btn btn-secondary">⬇ Download Front Face</a>
+        <a href="VTKRO_Card_Back_90x50mm.png" download class="btn btn-secondary">⬇ Download Back Face</a>
+      </div>
+    </div>
+
+    <!-- TAB 3: SHOWCASE -->
+    <div id="tab-showcase" class="tab-view">
+      <div class="showcase-frame">
+        <img src="VTKRO_Visiting_Card_Showcase_90x50mm.png" alt="VTKRO Visiting Card Showcase" />
+      </div>
+      <div class="controls">
+        <a href="VTKRO_Visiting_Card_Showcase_90x50mm.png" download class="btn btn-primary">⬇ Download 1400x1500 Showcase</a>
+      </div>
+    </div>
+
+    <!-- SPECS -->
+    <div class="specs-grid">
+      <div class="spec-card">
+        <div class="spec-label">Optical Architecture</div>
+        <div class="spec-val">Level H Error Correction (30%)</div>
+        <div class="spec-desc">Engineered so the embedded VTKRO prism logo, HUD brackets, and cyber nodes retain instantaneous camera acquisition.</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-label">Direct Action Destination</div>
+        <div class="spec-val">https://www.vtkro.com/</div>
+        <div class="spec-desc">Immediately triggers iOS Camera & Android Google Lens URL prompt to open VTKRO's official website.</div>
+      </div>
+      <div class="spec-card">
+        <div class="spec-label">Print & Display Standard</div>
+        <div class="spec-val">90 x 50 mm @ 300 DPI</div>
+        <div class="spec-desc">Standard Indian & European visiting card proportions (1063 x 591 px) formatted for offset or digital commercial printing.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(id) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(id).classList.add('active');
+    }
+
+    const card3D = document.getElementById('card3D');
+    function toggleFlip() {
+      card3D.classList.toggle('flipped');
+    }
+
+    // Subtle 3D tilt tracking
+    const cardScene = document.getElementById('cardScene');
+    cardScene.addEventListener('mousemove', (e) => {
+      const rect = cardScene.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const rotX = -(y / rect.height) * 20;
+      const rotY = (x / rect.width) * 20;
+      const isFlipped = card3D.classList.contains('flipped');
+      card3D.style.transform = `rotateX(${rotX}deg) rotateY(${isFlipped ? 180 + rotY : rotY}deg)`;
+    });
+    cardScene.addEventListener('mouseleave', () => {
+      const isFlipped = card3D.classList.contains('flipped');
+      card3D.style.transform = `rotateX(0deg) rotateY(${isFlipped ? 180 : 0}deg)`;
+    });
+  </script>
+</body>
+</html>

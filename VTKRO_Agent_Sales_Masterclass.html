@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VTKRO Agent Sales Masterclass — Illustrated by Bigli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: #070B19;
+      --bg-card: #0F172A;
+      --bg-card-hover: #16223F;
+      --border-card: #1E293B;
+      --border-highlight: #00E5FF;
+      --cyan-glow: #00E5FF;
+      --cyan-soft: #38BDF8;
+      --emerald: #10B981;
+      --amber: #F59E0B;
+      --rose: #F43F5E;
+      --text-white: #F8FAFC;
+      --text-body: #CBD5E1;
+      --text-muted: #64748B;
+      --quote-bg: #0A1128;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-body);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, #00E5FF 0%, #0284C7 100%);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .brand-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-white);
+      letter-spacing: -0.02em;
+    }
+
+    .author-pill {
+      font-size: 0.75rem;
+      color: var(--amber);
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-nav {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      color: var(--text-white);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--cyan-glow);
+      box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+    }
+
+    .slide-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--cyan-soft);
+      padding: 0 0.5rem;
+    }
+
+    /* Main Slide Container */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .slide-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      width: 100%;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+      display: none;
+      animation: fadeIn 0.3s ease forwards;
+      overflow: hidden;
+    }
+
+    .slide-card.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-header {
+      padding: 1.5rem 2rem 1rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.5) 100%);
+    }
+
+    .slide-category {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--cyan-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.35rem;
+    }
+
+    .slide-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-white);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 0.35rem;
+    }
+
+    .slide-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .slide-body {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      align-items: stretch;
+    }
+
+    @media (max-width: 992px) {
+      .slide-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Content Panel */
+    .content-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .info-block {
+      background: rgba(2, 6, 23, 0.5);
+      border: 1px solid var(--border-card);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .info-block-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .badge-cyan { color: var(--cyan-glow); }
+    .badge-green { color: var(--emerald); }
+    .badge-red { color: var(--rose); }
+    .badge-amber { color: var(--amber); }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 1.25rem;
+    }
+
+    .bullet-list li::before {
+      content: "▹";
+      position: absolute;
+      left: 0;
+      color: var(--cyan-glow);
+      font-weight: bold;
+    }
+
+    /* Pitch Script Box */
+    .script-box {
+      background: var(--quote-bg);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-left: 4px solid var(--cyan-glow);
+      border-radius: 12px;
+      padding: 1.25rem;
+      position: relative;
+    }
+
+    .script-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+    }
+
+    .script-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--cyan-glow);
+    }
+
+    .btn-copy {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      color: var(--cyan-glow);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: var(--cyan-glow);
+      color: #000;
+    }
+
+    .script-text {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #F1F5F9;
+      font-style: italic;
+    }
+
+    .script-text strong {
+      color: var(--cyan-soft);
+      font-style: normal;
+    }
+
+    /* Right Visual Panel */
+    .visual-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #090E22 0%, #0D1533 100%);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .visual-img-wrap {
+      width: 100%;
+      max-width: 380px;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.6);
+      margin-bottom: 1.25rem;
+      background: #050814;
+    }
+
+    .visual-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .visual-img-wrap:hover .visual-img {
+      transform: scale(1.04);
+    }
+
+    .visual-caption {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--cyan-glow);
+      margin-bottom: 0.35rem;
+      line-height: 1.3;
+    }
+
+    .visual-subcaption {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      max-width: 360px;
+    }
+
+    /* Speaker Notes Accordion */
+    .notes-drawer {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 1rem 2rem;
+      background: rgba(7, 11, 25, 0.8);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .notes-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--amber);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      text-transform: uppercase;
+      padding-top: 0.15rem;
+    }
+
+    .notes-body {
+      flex: 1;
+      line-height: 1.5;
+      color: #94A3B8;
+    }
+
+    /* Bottom Thumbnails / Slide Selector */
+    footer {
+      background: rgba(15, 23, 42, 0.9);
+      border-top: 1px solid var(--border-card);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      overflow-x: auto;
+    }
+
+    .dots-container {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding: 0.25rem 0;
+    }
+
+    .slide-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border-card);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .slide-dot.active {
+      background: var(--cyan-glow);
+      box-shadow: 0 0 8px var(--cyan-glow);
+      transform: scale(1.2);
+    }
+
+    .slide-dot:hover {
+      background: var(--cyan-soft);
+    }
+
+    .shortcuts-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .shortcuts-hint kbd {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-family: inherit;
+      color: var(--cyan-soft);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      right: 2rem;
+      background: var(--emerald);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <div class="brand-wrap">
+      <span class="brand-badge">VTKRO</span>
+      <span class="brand-title">Agent Sales Masterclass</span>
+      <span class="author-pill">Trainer: SANJAI KUMAR</span>
+    </div>
+
+    <div class="nav-controls">
+      <button class="btn-nav" id="btnPrev">← Prev</button>
+      <span class="slide-counter" id="slideCount">1 / 13</span>
+      <button class="btn-nav" id="btnNext">Next →</button>
+      <button class="btn-nav" id="btnDownloadPpt" onclick="window.location.href='VTKRO_Agent_Sales_Masterclass.pptx'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PPTX
+      </button>
+    </div>
+  </header>
+
+  <!-- Slide Deck -->
+  <main>
+
+    <!-- SLIDE 1: Welcome -->
+    <div class="slide-card active" data-index="1">
+      <div class="slide-header">
+        <div class="slide-category">// Masterclass Initiation</div>
+        <h1 class="slide-title">VTKRO Agent Sales Masterclass</h1>
+        <p class="slide-subtitle">The Complete Field & Telecalling Playbook to Consult Clients & Close High-Value Deals</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block">
+            <h3 class="info-block-title badge-cyan">★ Welcome to the VTKRO Consulting Family!</h3>
+            <p style="margin-bottom: 0.75rem; line-height: 1.6;">
+              Congratulations on taking the first step in your VTKRO consulting career. This masterclass is authored by 
+              <strong>Agent Consultant SANJAI KUMAR</strong>, grounded strictly in field-tested execution, client psychology, and successful closings.
+            </p>
+            <p style="line-height: 1.6;">
+              Whether you are engaging luxury hospitals or local cafes, this playbook equips you with word-for-word scripts, 
+              psychological defense shields, package value propositions, and closing formulas that convert inquiries into high commissions.
+            </p>
+          </div>
+          <div class="info-block">
+            <h3 class="info-block-title badge-amber">◈ What You Will Master in This Training:</h3>
+            <ul class="bullet-list">
+              <li><strong>Targeting Intelligence:</strong> Big Enterprise vs Small Business buying triggers.</li>
+              <li><strong>The "Call First" Golden Rule:</strong> Eliminating cold walk-in rejections.</li>
+              <li><strong>The Relative & Friend Protocol:</strong> Defeating discount pressure cleanly.</li>
+              <li><strong>The 3 Tailored Packages:</strong> ₹15,000 Starter, ₹25,000 Pro Suite, and ₹50,000 AI Store.</li>
+              <li><strong>Objection Armor:</strong> Crushing the "cheap website" and "already have a site" excuses.</li>
+              <li><strong>The Alternative Choice Close:</strong> Booking the high-converting 10-minute demo.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_welcome_1789839363772.jpg" alt="Bigli Welcome" />
+          </div>
+          <div class="visual-caption">Meet Bigli! Your VTKRO Consulting Guide</div>
+          <p class="visual-subcaption">Bigli illustrates every tactical script and field rule across this deck to make your learning seamless and unforgettable.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Welcome new agents with contagious enthusiasm! Emphasize that selling VTKRO is not high-pressure pitching; it is consultative diagnosis. 
+          Agents who follow Sanjai Kumar's system build lasting client trust and achieve predictable weekly earnings.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Big vs Small Business -->
+    <div class="slide-card" data-index="2">
+      <div class="slide-header">
+        <div class="slide-category">// Module 01: Client Intelligence</div>
+        <h2 class="slide-title">Targeting Strategy: Big Businesses vs. Small Businesses</h2>
+        <p class="slide-subtitle">Different business sizes have completely opposite buying motivations. Match your pitch to their core psychology.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block">
+            <h3 class="info-block-title badge-cyan">1. Big Businesses (Hospitals, Malls, Luxury Cafes, Supermarkets)</h3>
+            <ul class="bullet-list">
+              <li><strong>Core Priority:</strong> QUALITY, REPUTATION & MULTIPLE BUNDLED SERVICES.</li>
+              <li><strong>Buyer Psychology:</strong> Large enterprises do NOT care about saving ₹5,000. They fear poor aesthetics, server crashes, and brand embarrassment.</li>
+              <li><strong>Pitch Angle:</strong> Focus on end-to-end digital authority: multi-page web presence, secure payment gateways, staff digital visiting cards, and automated CRM workflows.</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h3 class="info-block-title badge-green">2. Small Businesses (Local Salons, Bakeries, Neighborhood Clinics)</h3>
+            <ul class="bullet-list">
+              <li><strong>Core Priority:</strong> COST-EFFICIENCY & IMMEDIATE ROI.</li>
+              <li><strong>Buyer Psychology:</strong> Small shop owners dread recurring monthly agency bills and complex tech they don't understand.</li>
+              <li><strong>Pitch Angle:</strong> Emphasize transparent, one-time pricing, zero maintenance headaches, and instant WhatsApp inquiry generation.</li>
+            </ul>
+          </div>
+          <div class="info-block" style="border-left: 4px solid var(--amber);">
+            <p style="font-size: 0.85rem; font-weight: 700; color: var(--amber);">SANJAI KUMAR'S CARDINAL RULE:</p>
+            <p style="font-size: 0.88rem; color: #fff;">Never pitch "low-cost budget" to a premier hospital, and never overwhelm a neighborhood bakery with complex corporate stack jargon!</p>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_biz_types_1789839390139.jpg" alt="Bigli Business Scale" />
+          </div>
+          <div class="visual-caption">Bigli's Value Scale</div>
+          <p class="visual-subcaption">Enterprise demands Quality & Multi-Services. Local retail demands Cost-Efficiency & Instant Return.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Coach agents to perform a 60-second qualification before dialing: Is this business owner motivated by prestige or cost savings? 
+          Leading with the wrong value proposition causes immediate friction.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: How to Approach (Call First) -->
+    <div class="slide-card" data-index="3">
+      <div class="slide-header">
+        <div class="slide-category">// Module 02: Outreach Protocol</div>
+        <h2 class="slide-title">How to Approach a Client: The "Call First" Golden Rule</h2>
+        <p class="slide-subtitle">Why phone briefings protect your authority and eliminate embarrassing walk-in rejections.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block">
+            <h3 class="info-block-title badge-cyan">✓ The Mandatory Phone Briefing (ALWAYS DO THIS)</h3>
+            <ul class="bullet-list">
+              <li><strong>Respects Their Schedule:</strong> Owners are occupied with daily logistics, customers, and inventory.</li>
+              <li><strong>Qualifies the Lead:</strong> A quick 2-minute briefing sets up professional expectations before you invest travel time.</li>
+              <li><strong>80%+ Higher Show-Up Rate:</strong> A pre-booked appointment ensures a dedicated sit-down where they are attentive.</li>
+            </ul>
+          </div>
+          <div class="info-block">
+            <h3 class="info-block-title badge-red">✗ CRITICAL AVOID: Never Walk In Unannounced!</h3>
+            <ul class="bullet-list">
+              <li><strong>Instant Defensive Rejection:</strong> An unannounced walk-in catches them off-guard, triggering a quick "Not interested, come back later".</li>
+              <li><strong>Lowers Professional Status:</strong> Unscheduled visits make you look like a desperate salesperson rather than a VTKRO tech consultant.</li>
+            </ul>
+          </div>
+          <div class="info-block" style="border-left: 4px solid var(--amber);">
+            <p style="font-size: 0.85rem; font-weight: 700; color: var(--amber);">THE NEIGHBORHOOD RESIDENCY RULE:</p>
+            <p style="font-size: 0.88rem; color: #fff;">Even if the prospective client's business is 50 meters away from your home, CALL FIRST. Professionalism always beats convenience.</p>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_phone_call_1789839412105.jpg" alt="Bigli Phone Call" />
+          </div>
+          <div class="visual-caption">Bigli's Appointment Rule</div>
+          <p class="visual-subcaption">Confirm the meeting slot on the phone before stepping foot through their doors!</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Remind agents that cold walk-ins burn out beginners quickly. Calling first shields them from physical fatigue and puts them 
+          in control of their daily calendar.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Friends & Relatives Protocol -->
+    <div class="slide-card" data-index="4">
+      <div class="slide-header">
+        <div class="slide-category">// Module 03: Social Circle Consulting</div>
+        <h2 class="slide-title">Approaching Relatives & Friends: Defeating the Discount Trap</h2>
+        <p class="slide-subtitle">How to protect your standard pricing and turn social connections into career champions.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block">
+            <h3 class="info-block-title badge-cyan">The Social Circle Context</h3>
+            <p style="font-size: 0.9rem; line-height: 1.5;">
+              When consulting friends, relatives, or close acquaintances, you <strong>can approach them directly</strong> without a cold call since personal trust already exists. 
+              However, they almost always expect steep discounts or free work.
+            </p>
+          </div>
+
+          <!-- Script 1 -->
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Response 1: The Corporate Shield (Default)</span>
+              <button class="btn-copy" onclick="copyText('script-rel-1')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-rel-1">
+              "I am an authorized consultant for VTKRO. Our enterprise cloud hosting, security, and payment architectures are fixed strictly by <strong>higher corporate authorities</strong>. I am not permitted to modify official packages, but I will personally supervise your setup so you get VIP 24/7 priority onboarding."
+            </p>
+          </div>
+
+          <!-- Script 2 -->
+          <div class="script-box" style="border-left-color: var(--emerald);">
+            <div class="script-header">
+              <span class="script-tag" style="color: var(--emerald);">Response 2: The Intern Challenge (If Feeling Insecure)</span>
+              <button class="btn-copy" onclick="copyText('script-rel-2')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-rel-2">
+              "I am currently working as a digital consultant intern at VTKRO. To clear my communication & performance evaluation round, earn my <strong>professional certification</strong>, and unlock my stipend, I need to complete a verified sale at standard company rates. By launching your website through me, you're directly helping me pass my official evaluation!"
+            </p>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_relatives_1789839555347.jpg" alt="Bigli Relatives Rule" />
+          </div>
+          <div class="visual-caption">Bigli's Policy Shield</div>
+          <p class="visual-subcaption">Converts bargaining pressure into supportive pride for your professional career milestone.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Young agents often lose deals by giving away their commissions to family. By framing the standard rate as an official 
+          internship qualification requirement, relatives want to support them rather than squeeze them for a discount.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Cold Call Opening -->
+    <div class="slide-card" data-index="5">
+      <div class="slide-header">
+        <div class="slide-category">// Module 04: Telecalling Mastery</div>
+        <h2 class="slide-title">The Cold Call Opening: The 2-Minute Hook</h2>
+        <p class="slide-subtitle">Command attention, establish credibility, and win listening permission in under 120 seconds.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Official Cold Call Script</span>
+              <button class="btn-copy" onclick="copyText('script-cold')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-cold">
+              "Hello <strong>[Client's Name]</strong>, good morning/afternoon!<br><br>
+              My name is <strong>[Agent Name]</strong> calling on behalf of <strong>VTKRO</strong>, a premier web development and digital solutions company.<br><br>
+              I’m reaching out because we help businesses like <strong>[Client's Business Name]</strong> elevate their online presence, attract more customers, and automate their operations. We are currently offering specialized business growth website packages tailored to your exact industry needs.<br><br>
+              <strong>Do you have two minutes</strong> to discuss how a modern website could help scale your revenue?"
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-amber">◈ 3 Delivery Secrets of Elite Telecallers:</h3>
+            <ul class="bullet-list">
+              <li><strong>Smile Through the Receiver:</strong> Physical smiling elevates vocal pitch and projects warmth.</li>
+              <li><strong>Name Precision:</strong> State their exact business name so it sounds like bespoke research, not a robot blast.</li>
+              <li><strong>The 2-Minute Micro-Agreement:</strong> Asking for only two minutes lowers resistance immediately.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_cold_call_1789839581186.jpg" alt="Bigli Cold Call" />
+          </div>
+          <div class="visual-caption">Bigli's 2-Minute Telecall</div>
+          <p class="visual-subcaption">High energy, crystal-clear pacing, and a crisp 120-second timer to win their attention.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Have agents practice pausing right after asking: "Do you have two minutes...?" 
+          The first person to speak loses. Wait patiently for their 'Yes' or 'Sure, what is it?'.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Warm Lead & Follow-Up -->
+    <div class="slide-card" data-index="6">
+      <div class="slide-header">
+        <div class="slide-category">// Module 05: Inbound & Follow-Up</div>
+        <h2 class="slide-title">Warm Lead & Follow-Up: Converting Inquiries into Intent</h2>
+        <p class="slide-subtitle">How to capitalize on leads who already showed interest via WhatsApp, ads, or partner links.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Official Warm Lead Follow-Up Script</span>
+              <button class="btn-copy" onclick="copyText('script-warm')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-warm">
+              "Hi <strong>[Client's Name]</strong>, this is <strong>[Agent Name]</strong> from <strong>VTKRO</strong>. Following up on your inquiry regarding digital solutions for <strong>[Client's Company Name]</strong>.<br><br>
+              At VTKRO, we build custom, high-converting websites equipped with modern automation tools to help you stand out from competitors and convert website traffic into paying clients.<br><br>
+              I’d love to walk you through <strong>three specialized packages</strong> we’ve designed to fit different business scales."
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-green">✓ The Transition Bridge:</h3>
+            <p style="font-size: 0.9rem; line-height: 1.6;">
+              <em>"Depending on where your business is currently focused, we have three tailored packages designed to give you the highest Return on Investment (ROI)..."</em>
+            </p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+              • <strong>Speed to Lead:</strong> Contact inbound inquiries within 15 minutes to increase conversion by 400%.
+            </p>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_warm_lead_1789839603684.jpg" alt="Bigli Warm Lead" />
+          </div>
+          <div class="visual-caption">Bigli's Warm Bridge</div>
+          <p class="visual-subcaption">Review customer inquiry notes and guide them directly into the 3 solution packages.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Never interrogate warm leads. Acknowledge that they took the initiative to reach out, confirm their business type, and smoothly 
+          introduce the 3-package spectrum.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Package 1 (₹15,000) -->
+    <div class="slide-card" data-index="7">
+      <div class="slide-header">
+        <div class="slide-category">// Module 06: Product Portfolio (Tier 1)</div>
+        <h2 class="slide-title">Package 1: Standard Starter Web Presence (₹15,000)</h2>
+        <p class="slide-subtitle">The rapid-loading digital foundation for businesses establishing trust and online credibility.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block" style="border-left: 4px solid var(--emerald);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 1.25rem; font-weight: 800; color: var(--emerald);">OFFICIAL PRICE: ₹15,000</span>
+              <span style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); color: var(--emerald); padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">HIGH VOLUME</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Ideal for: Emerging clinics, local shops, accountants, gyms, and independent professionals.</p>
+          </div>
+
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Agent Value Pitch</span>
+              <button class="btn-copy" onclick="copyText('script-pkg1')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-pkg1">
+              "If you need a sleek, high-performing corporate presence to establish trust, our <strong>Standard 3–5 Page Business Website</strong> is ideal. We design a mobile-responsive, lightning-fast website featuring your core services, about section, gallery, and contact conversion forms. It’s perfect for establishing instant credibility when customers search for you online."
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-cyan">◈ Technical Architecture Highlights:</h3>
+            <ul class="bullet-list">
+              <li>3–5 Custom Responsive Pages (Home, About, Services, Gallery, Contact).</li>
+              <li>Lightning-Fast Performance: Loads in &lt; 1.5 seconds on all budget smartphones.</li>
+              <li>Lead Capture Form & Google Maps embedded for local direction discovery.</li>
+              <li>Instant WhatsApp Chat button integration.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_starter_1789839630050.jpg" alt="Bigli Starter Package" />
+          </div>
+          <div class="visual-caption">Standard Starter Package ₹15,000</div>
+          <p class="visual-subcaption">Lightning-fast mobile-responsive website that converts local searchers into incoming calls.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Use Package 1 as your foot-in-the-door for skeptical clients. Frame it as basic commercial hygiene: without it, their competitors 
+          absorb 100% of local search traffic.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Package 2 (₹25,000) -->
+    <div class="slide-card" data-index="8">
+      <div class="slide-header">
+        <div class="slide-category">// Module 07: Product Portfolio (Tier 2)</div>
+        <h2 class="slide-title">Package 2: Professional Branding & Payment Suite (₹25,000)</h2>
+        <p class="slide-subtitle">Accept client payments directly and share business profiles with a futuristic NFC tap.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block" style="border-left: 4px solid var(--cyan-glow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 1.25rem; font-weight: 800; color: var(--cyan-glow);">OFFICIAL PRICE: ₹25,000</span>
+              <span style="font-size: 0.75rem; background: rgba(0, 229, 255, 0.15); color: var(--cyan-glow); padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">MOST POPULAR</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Ideal for: Retail showrooms, consultants, aesthetic clinics, architects, and growing brands.</p>
+          </div>
+
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Agent Value Pitch</span>
+              <button class="btn-copy" onclick="copyText('script-pkg2')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-pkg2">
+              "If you want to accept payments directly and build a modern brand presence, our <strong>Professional Package</strong> is the complete kit. You get a customized multi-page website integrated with a secure <strong>Payment Gateway</strong>. On top of that, we include <strong>Physical Professional Business Cards</strong> along with an interactive <strong>Digital Business Card</strong> so you can share your business profile with clients in a single tap via smartphone."
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-cyan">◈ The Hybrid Offline-Online Advantage:</h3>
+            <ul class="bullet-list">
+              <li>Multi-Page Dynamic Architecture with client portfolios and testimonials.</li>
+              <li><strong>Payment Gateway:</strong> Collect UPI, QR, Credit/Debit Cards, & Net Banking directly.</li>
+              <li><strong>Interactive 3D Digital Visiting Card:</strong> Tap to smartphone to save contact & portfolio instantly!</li>
+              <li><strong>Luxury Physical Cards:</strong> Premium textured cards for high-profile business handshakes.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_pro_pkg_1789839655537.jpg" alt="Bigli Pro Package" />
+          </div>
+          <div class="visual-caption">Professional Suite ₹25,000</div>
+          <p class="visual-subcaption">NFC Smart Visiting Card + Instant Online Payments. The ultimate modern networking weapon!</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Always demonstrate the 3D Digital Card live on your own smartphone during the meeting. When business owners see their phone 
+          instantly open a sleek profile just by tapping a card, they are blown away.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Package 3 (₹50,000) -->
+    <div class="slide-card" data-index="9">
+      <div class="slide-header">
+        <div class="slide-category">// Module 08: Product Portfolio (Tier 3)</div>
+        <h2 class="slide-title">Package 3: E-Commerce & WhatsApp AI Automation (₹50,000)</h2>
+        <p class="slide-subtitle">The hands-free revenue engine: sell catalog products and automate client orders 24/7.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block" style="border-left: 4px solid var(--amber);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <span style="font-size: 1.25rem; font-weight: 800; color: var(--amber);">OFFICIAL PRICE: ₹50,000</span>
+              <span style="font-size: 0.75rem; background: rgba(245, 158, 11, 0.15); color: var(--amber); padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 700;">MAX ROI</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Ideal for: D2C brands, restaurants, fashion stores, multi-branch distributors, and clinics.</p>
+          </div>
+
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Agent Value Pitch</span>
+              <button class="btn-copy" onclick="copyText('script-pkg3')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-pkg3">
+              "If you are looking to sell products online or fully automate your customer interactions, our <strong>E-Commerce & Smart Automation Package</strong> is designed for high revenue growth. You get a full multi-page E-Commerce storefront with online inventory management, coupled with an integrated <strong>WhatsApp Chatbot</strong>. The chatbot handles customer inquiries, sends updates, and drives automated sales 24/7 without requiring manual management."
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-cyan">◈ Autopilot Commerce Capabilities:</h3>
+            <ul class="bullet-list">
+              <li>Complete Multi-Product Storefront with filters, cart, discounts & checkout.</li>
+              <li>Real-time inventory sync & merchant backend management.</li>
+              <li><strong>WhatsApp AI Sales Bot:</strong> Automatically answers questions, collects orders, and issues invoices.</li>
+              <li><strong>Zero Additional Staff Required:</strong> Replaces manual sales inquiry labor.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_ecom_ai_1789839680495.jpg" alt="Bigli E-Commerce AI" />
+          </div>
+          <div class="visual-caption">E-Commerce & AI Suite ₹50,000</div>
+          <p class="visual-subcaption">Relax with coffee while your WhatsApp Chatbot processes orders and revenue on autopilot 24/7.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Compare the one-time ₹50,000 investment against hiring a human sales rep (₹15,000/mo = ₹1,80,000/yr). 
+          The WhatsApp bot works 24/7, never takes sick leave, and handles 100 customer chats simultaneously.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Objection 1 (Cheap Sites) -->
+    <div class="slide-card" data-index="10">
+      <div class="slide-header">
+        <div class="slide-category">// Module 09: Objection Mastery (Part 1)</div>
+        <h2 class="slide-title">Mastering Objection 1: "Others Offer Websites for Cheaper!"</h2>
+        <p class="slide-subtitle">The Digital Flyer Analogy: how to dismantle cheap template competitors without getting defensive.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block" style="border-left: 4px solid var(--rose);">
+            <p style="font-size: 0.85rem; font-weight: 700; color: var(--rose);">THE CLIENT OBJECTION:</p>
+            <p style="font-size: 0.95rem; color: #fff; font-weight: 600;">"Why should I pay ₹15,000+ when freelancers or agencies offer basic websites for ₹2,000 to ₹5,000?"</p>
+          </div>
+
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Agent Response Script</span>
+              <button class="btn-copy" onclick="copyText('script-obj1')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-obj1">
+              "A cheap template website acts like a <strong>digital flyer</strong>—no one sees it, and it rarely converts visitors into buyers.<br><br>
+              At VTKRO, we don't just build pages; <strong>we build conversion tools</strong>. Our packages include optimized code, mobile responsiveness, fast load speeds, and business integrations like payment gateways and AI automation to generate actual leads and sales for your business."
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-amber">◈ The Core Distinction to Explain:</h3>
+            <ul class="bullet-list">
+              <li><strong>Cheap Template Sites:</strong> Slow load speed, unindexed on Google, zero lead capture, broken on mobile. Costs ₹3,000 and generates ₹0 revenue.</li>
+              <li><strong>VTKRO Conversion Machines:</strong> Sub-second load speed, WhatsApp lead capture, payment gateway, SEO ranking. Pays for itself in days.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_cheap_vs_pro_1789840140905.jpg" alt="Bigli Cheap vs Pro" />
+          </div>
+          <div class="visual-caption">Cheap Flyer vs Conversion Machine</div>
+          <p class="visual-subcaption">Don't let clients waste money on broken digital flyers when they can own a high-converting revenue rocket!</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Never argue with the client. Validate them: 'You are 100% correct, cheap templates exist. But would you rather spend ₹3,000 on a site that brings zero customers, or ₹15,000 on a machine that brings 20 new clients every month?'
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: Objection 2 (Already Have a Site) -->
+    <div class="slide-card" data-index="11">
+      <div class="slide-header">
+        <div class="slide-category">// Module 10: Objection Mastery (Part 2)</div>
+        <h2 class="slide-title">Mastering Objection 2: "I Already Have a Website!"</h2>
+        <p class="slide-subtitle">How to validate their existing setup and expose the gap between a passive brochure and an active sales engine.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block" style="border-left: 4px solid var(--rose);">
+            <p style="font-size: 0.85rem; font-weight: 700; color: var(--rose);">THE CLIENT OBJECTION:</p>
+            <p style="font-size: 0.95rem; color: #fff; font-weight: 600;">"We already have a website created a couple of years ago, so we don't need another one."</p>
+          </div>
+
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Agent Response Script</span>
+              <button class="btn-copy" onclick="copyText('script-obj2')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-obj2">
+              "That’s great! Is your current site equipped with an <strong>automated WhatsApp chatbot</strong> to capture leads, or can it <strong>instantly take online payments</strong>?<br><br>
+              We can help <strong>upgrade your existing online setup</strong> into a 24/7 automated sales system."
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-green">◈ The 3-Step Pivot Strategy:</h3>
+            <ul class="bullet-list">
+              <li><strong>Validate & Praise:</strong> "That's great!" shows you respect their forward-thinking attitude.</li>
+              <li><strong>The Diagnostic Gap:</strong> Asking about WhatsApp bots and one-click payments exposes outdated features without insulting their existing site.</li>
+              <li><strong>Position as an Upgrade:</strong> We don't discard their website—we supercharge it into an automated sales engine.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_upgrade_site_1789840163493.jpg" alt="Bigli Site Upgrade" />
+          </div>
+          <div class="visual-caption">Bigli's 24/7 Upgrade Kit</div>
+          <p class="visual-subcaption">Turn dormant, sleepy websites into active 24/7 revenue-generating sales powerhouses.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          80% of business websites in India are dead brochure sites created years ago. Nobody visits them and they generate zero leads. 
+          By pitching the WhatsApp chatbot and payment gateway upgrade, you turn a dead end into a high-value sale.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: The Closing Strategy -->
+    <div class="slide-card" data-index="12">
+      <div class="slide-header">
+        <div class="slide-category">// Module 11: Closing Formula</div>
+        <h2 class="slide-title">The Power Close: Alternative Choice & Demo Booking</h2>
+        <p class="slide-subtitle">Eliminate hesitation by replacing open-ended questions with structured alternative choices.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="script-box">
+            <div class="script-header">
+              <span class="script-tag">Official Closing Script</span>
+              <button class="btn-copy" onclick="copyText('script-close')">Copy Script</button>
+            </div>
+            <p class="script-text" id="script-close">
+              "Based on your current operations at <strong>[Client's Business Name]</strong>, would you prefer starting with our <strong>₹15,000 Standard Site</strong>, upgrading to the <strong>₹25,000 Payment & Branding Suite</strong>, or leveraging the <strong>₹50,000 E-Commerce & WhatsApp Chatbot Setup</strong>?<br><br>
+              I can reserve a slot for our senior technical strategist to run a quick <strong>10-minute demo</strong> for you this afternoon. <strong>Would 3:00 PM or 5:00 PM work better?</strong>"
+            </p>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-amber">◈ Psychological Power of the Alternative Close:</h3>
+            <ul class="bullet-list">
+              <li><strong>Never Ask Yes/No:</strong> Asking "Do you want to buy?" invites an easy "No".</li>
+              <li><strong>Choice of Winners:</strong> Offering Package A vs B vs C forces their mind to choose an option, not whether to buy.</li>
+              <li><strong>The 3 PM vs 5 PM Lock:</strong> By offering two specific times, their brain considers their schedule rather than rejecting the meeting.</li>
+              <li><strong>The 10-Minute Low Commitment:</strong> 10 minutes feels risk-free for a busy business owner.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_demo_close_1789840447287.jpg" alt="Bigli Demo Close" />
+          </div>
+          <div class="visual-caption">Bigli's 10-Minute Demo Lock</div>
+          <p class="visual-subcaption">Offer "3:00 PM or 5:00 PM?" to secure the demonstration and seal the deal effortlessly.</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Remember: The agent's mission on the phone is NOT to close the ₹50,000 deal; it is to CLOSE THE 10-MINUTE DEMO! 
+          Once the senior technical strategist delivers the demo, our closing rate exceeds 60%.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 13: Agent Success Blueprint -->
+    <div class="slide-card" data-index="13">
+      <div class="slide-header">
+        <div class="slide-category">// Module 12: Agent Blueprint & Commission Math</div>
+        <h2 class="slide-title">The Champion Agent Daily Routine & Earning Blueprint</h2>
+        <p class="slide-subtitle">The predictable daily habits that generate ₹50,000 to ₹1,50,000+ monthly commissions.</p>
+      </div>
+      <div class="slide-body">
+        <div class="content-col">
+          <div class="info-block" style="border-left: 4px solid var(--emerald);">
+            <h3 class="info-block-title badge-green">★ THE PREDICTABLE COMMISSION MATH:</h3>
+            <ul class="bullet-list">
+              <li><strong>10 Phone Briefings / Day</strong> = 50 Briefings / Week</li>
+              <li><strong>2 Demos Scheduled / Day</strong> = 10 Demos / Week</li>
+              <li><strong>2 to 3 Deals Closed / Week</strong> = 8 to 12 Deals / Month</li>
+              <li><strong>Monthly Commission Payout:</strong> <strong>₹40,000 – ₹1,20,000+ / month!</strong></li>
+            </ul>
+          </div>
+
+          <div class="info-block">
+            <h3 class="info-block-title badge-amber">◈ Sanjai Kumar's 4 Golden Commandments:</h3>
+            <ul class="bullet-list">
+              <li><strong>1. Always Call First:</strong> No unannounced walk-ins; phone bookings lock in respect and attention.</li>
+              <li><strong>2. Match Business Scale:</strong> Pitch Quality to hospitals/malls; pitch Cost-Efficiency to small shops.</li>
+              <li><strong>3. Defend Pricing:</strong> Use the Corporate Shield or Intern Milestone script with relatives.</li>
+              <li><strong>4. Close on the Demo:</strong> Always offer 3 PM vs 5 PM alternative choice to book the 10-minute demo.</li>
+            </ul>
+          </div>
+
+          <div class="info-block" style="border-left: 4px solid var(--cyan-glow);">
+            <p style="font-weight: 800; color: var(--cyan-glow); font-size: 0.95rem;">WE WIN AS ONE TEAM. WELCOME TO VTKRO!</p>
+          </div>
+        </div>
+        <div class="visual-col">
+          <div class="visual-img-wrap">
+            <img class="visual-img" src="bigli_images/bigli_trophy_1789840487945.jpg" alt="Bigli Trophy Champion" />
+          </div>
+          <div class="visual-caption">Bigli the Champion!</div>
+          <p class="visual-subcaption">Consistency + Proven Scripts = #1 Sales Champion Podium. Let's make this your highest earning year!</p>
+        </div>
+      </div>
+      <div class="notes-drawer">
+        <span class="notes-tag">Trainer Notes</span>
+        <p class="notes-body">
+          Celebrate their graduation! Encourage every agent to make their first 10 calls today. 
+          Sales is not luck; it is consistency and adherence to proven scripts. Let's conquer the market together!
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation & Thumbnails -->
+  <footer>
+    <div class="shortcuts-hint">
+      Use <kbd>←</kbd> <kbd>→</kbd> or <kbd>Space</kbd> to navigate slides
+    </div>
+
+    <div class="dots-container" id="dotsContainer">
+      <!-- 13 dots dynamically generated -->
+    </div>
+
+    <div style="font-size: 0.8rem; color: var(--text-muted);">
+      VTKRO Digital Solutions © 2026
+    </div>
+  </footer>
+
+  <!-- Toast for Copy Notification -->
+  <div class="toast" id="copyToast">✓ Script copied to clipboard!</div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide-card');
+    const dotsContainer = document.getElementById('dotsContainer');
+    const slideCountEl = document.getElementById('slideCount');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const copyToast = document.getElementById('copyToast');
+
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+
+    // Build Dots
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = `slide-dot ${i === 0 ? 'active' : ''}`;
+      dot.title = `Slide ${i + 1}`;
+      dot.addEventListener('click', () => goToSlide(i));
+      dotsContainer.appendChild(dot);
+    }
+
+    const dots = document.querySelectorAll('.slide-dot');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlide);
+      });
+      dots.forEach((d, idx) => {
+        d.classList.toggle('active', idx === currentSlide);
+      });
+      slideCountEl.textContent = `${currentSlide + 1} / ${totalSlides}`;
+      btnPrev.disabled = currentSlide === 0;
+      btnNext.disabled = currentSlide === totalSlides - 1;
+      btnPrev.style.opacity = currentSlide === 0 ? '0.4' : '1';
+      btnNext.style.opacity = currentSlide === totalSlides - 1 ? '0.4' : '1';
+    }
+
+    function goToSlide(index) {
+      if (index >= 0 && index < totalSlides) {
+        currentSlide = index;
+        updateSlide();
+      }
+    }
+
+    btnPrev.addEventListener('click', () => {
+      if (currentSlide > 0) goToSlide(currentSlide - 1);
+    });
+
+    btnNext.addEventListener('click', () => {
+      if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        if (currentSlide < totalSlides - 1) goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (currentSlide > 0) goToSlide(currentSlide - 1);
+      }
+    });
+
+    function copyText(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        copyToast.classList.add('show');
+        setTimeout(() => copyToast.classList.remove('show'), 2000);
+      });
+    }
+
+    updateSlide();
+  </script>
+</body>
+</html>
